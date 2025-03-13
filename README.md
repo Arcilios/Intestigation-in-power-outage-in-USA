@@ -35,31 +35,11 @@ To ensure the dataset is ready for analysis, I performed the following cleaning 
 
 1. Remove unwanted rolls and columns(head of table, redundant index, unit of features) and set features as column names:
 
-```python
-data = pd.read_excel("outage.xlsx")
-data = data[4:] #The first four lines are head of the table. Removed
-data.columns = data.iloc[0] #Setting the features as column names
-data = data[2:].drop(columns=['variables']) #Remove redundant index and columns
-```
-
 - The first four rows contained metadata and headers, which were not actual data.
 - The variables column was not needed and was removed.
 - This step ensures a clean tabular format for analysis.
 
 2. For the ease of analysis, add a new column called ```season``` from ```MONTH```
-
-```python
-def season_check(month):
-    if month in [12, 1, 2]:
-        return 'Winter'
-    elif month in [3, 4, 5]:
-        return 'Spring'
-    elif month in [6, 7, 8]:
-        return 'Summer'
-    else:
-        return 'Fall'
-data['SEASON'] = data['MONTH'].transform(season_check)
-```
 
 - Instead of analyzing MONTH as a numerical value, categorizing by SEASON allows better trend analysis.
 - This helps identify seasonal patterns in outage durations.
@@ -231,24 +211,6 @@ By using a mix of categorical and numerical features, this model aims to provide
 I trained a baseline model using a Random Forest Regressor with the following features: ```SEASON``` and ```CLIMATE.CATEGORY```, two categorical nomial data. The target variable is ```OUTAGE.DURATION```.
 Those categorical nomial variables were one-hot encoded. A Randome Forest Regressor was trained using GridSearchCV for hyperparameter tuning. RMSE was used as the primary evaluation metric.
 
-```python
-preprocessor = ColumnTransformer([
-    ('cat', OneHotEncoder(handle_unknown='ignore'), features)  
-])
-pipeline = Pipeline([
-    ('preprocessor', preprocessor),
-    ('model', RandomForestRegressor())
-])
-param_grid = {
-    'model__n_estimators': [50,100, 200],
-    'model__max_depth': [None, 10, 20],
-    'model__min_samples_split': [2, 5, 10],
-    'model__min_samples_leaf': [1, 2, 4]
-}
-grid_search = GridSearchCV(pipeline, param_grid, cv=5, 
-                            scoring='neg_mean_squared_error', n_jobs=-1)
-```
-
 ### Result 
 After the regression, the best hyperparameters and the model performance is as following:
 
@@ -307,25 +269,6 @@ For the hyperparameters, I first started with very broad ranges to get a rough e
 
 After obtaining initial results, I refined the search space by focusing on promising values.
 
-```python
-preprocessor = ColumnTransformer([
-    ('cat', OneHotEncoder(handle_unknown='ignore'), ['CAUSE.CATEGORY.DETAIL', 'SEASON', 'CLIMATE.REGION']),
-    ('num', StandardScaler(), ['CUSTOMERS.AFFECTED', 'DEMAND.LOSS.MW', 'POPULATION'])
-])
-pipeline = Pipeline([
-    ('preprocessor', preprocessor),
-    ('model', RandomForestRegressor(random_state=42))
-])
-param_grid = {
-    'model__n_estimators': [10,20,50,80, 100, 200], 
-    'model__max_depth': [None, 15, 20, 35, 40, 50],  
-    'model__min_samples_split': [2, 5, 10, 20, 30, 40],  
-    'model__min_samples_leaf': [1, 2, 4, 8, 16, 32]  
-}
-
-grid_search = GridSearchCV(pipeline, param_grid, cv=10,     
-                            scoring='neg_mean_squared_error', n_jobs=-1, verbose=2)
-```
 ### Result
 
 After the regression, the best hyperparameters and the model performance is as following:
