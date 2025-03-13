@@ -65,8 +65,6 @@ data['SEASON'] = data['MONTH'].transform(season_check)
 Here is the head of data
 <iframe
   src="assets/head.html"
-  width="800"
-  height="600"
   frameborder="0"
 ></iframe>
 
@@ -117,12 +115,10 @@ To further explore seasonal trends in power outages, I created the following vis
 
 <iframe
   src="assets/pivot_table.html"
-  width="800"
-  height="600"
   frameborder="0"
 ></iframe>
 
-3. **This grouped bar chart shows how outages vary by season across different climate regions (cold, normal, and warm).**
+1. **This grouped bar chart shows how outages vary by season across different climate regions (cold, normal, and warm).**
    
 <iframe
   src="assets/pivot_table_plot.html"
