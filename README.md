@@ -65,6 +65,8 @@ data['SEASON'] = data['MONTH'].transform(season_check)
 Here is the head of data
 <iframe
   src="assets/head.html"
+  width = "800"
+  heighth = "400"
   frameborder="0"
 ></iframe>
 
@@ -115,6 +117,8 @@ To further explore seasonal trends in power outages, I created the following vis
 
 <iframe
   src="assets/pivot_table.html"
+  height = "300"
+  width = "400"
   frameborder="0"
 ></iframe>
 
@@ -144,7 +148,7 @@ For example:
 By further exploring the data, I found that when there is power outage because of certain ```CAUSE.CATEGORY```, the proportion of missingness is greater for ```OUTAGE.DURATION```, as shownn in following plot.
 
 <iframe
-  src="assets/missing_proportion.html"
+  src="assets/miss_proportion.html"
   width="800"
   height="600"
   frameborder="0"
