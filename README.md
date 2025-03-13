@@ -33,13 +33,13 @@ In the dataset there are 57 columns and 1570 rows, recording 1534 cases of power
 
 To ensure the dataset is ready for analysis, I performed the following cleaning steps:
 
-1. Remove unwanted rolls and columns(head of table, redundant index, unit of features) and set features as column names:
+Remove unwanted rolls and columns(head of table, redundant index, unit of features) and set features as column names:
 
 - The first four rows contained metadata and headers, which were not actual data.
 - The variables column was not needed and was removed.
 - This step ensures a clean tabular format for analysis.
 
-2. For the ease of analysis, add a new column called ```season``` from ```MONTH```
+For the ease of analysis, add a new column called ```season``` from ```MONTH```
 
 - Instead of analyzing MONTH as a numerical value, categorizing by SEASON allows better trend analysis.
 - This helps identify seasonal patterns in outage durations.
