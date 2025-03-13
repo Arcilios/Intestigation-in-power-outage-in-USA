@@ -155,6 +155,8 @@ By further exploring the data, I found that when there is power outage because o
   frameborder="0"
 ></iframe>
 
+### Hypothesis Test
+
 To analyze whether this is caused by coincidence and whether the missing values in ```OUTAGE.DURATION``` depend on ```CAUSE.CATEGORY```, I performed a permutation test with:
 
 - **Null Hypothesis**: Missingness in ```OUTAGE.DURATION``` is independent of ```CAUSE.CATEGORY```
@@ -224,6 +226,8 @@ By using a mix of categorical and numerical features, this model aims to provide
 
 ## Baseline Model
 
+### Hyperparameters
+
 I trained a baseline model using a Random Forest Regressor with the following features: ```SEASON``` and ```CLIMATE.CATEGORY```, two categorical nomial data. The target variable is ```OUTAGE.DURATION```.
 Those categorical nomial variables were one-hot encoded. A Randome Forest Regressor was trained using GridSearchCV for hyperparameter tuning. RMSE was used as the primary evaluation metric.
 
@@ -245,6 +249,7 @@ grid_search = GridSearchCV(pipeline, param_grid, cv=5,
                             scoring='neg_mean_squared_error', n_jobs=-1)
 ```
 
+### Result 
 After the regression, the best hyperparameters and the model performance is as following:
 
 ``` text
@@ -275,6 +280,8 @@ Also, the train RSME is smaller than the test RSME, indicating overfitting. In t
 
 After the baseline model, I trained a final model incorporating additional features and better preprocessing techniques. The selected features include:
 
+### Features Selection
+
 - ```CAUSE.CATEGORY.DETAIL```: Categorical, Ordinal
 Different causes (e.g., storms vs. equipment failure) lead to varying outage durations.
 - ```SEASON```: Categorical, Ordinal
@@ -289,6 +296,8 @@ High-demand outages may be prioritized differently.
 Urban areas may recover faster due to better infrastructure.
 
 These features align with the data-generating process of power outages, improving model performance by capturing real-world outage patterns.
+
+### Hyperparameters
 
 I chose Random Forest Regression for predicting outage duration. This model is robust to non-linearity, handles categorical and numerical features well, and performs well with missing or imbalanced data.
 
@@ -317,6 +326,7 @@ param_grid = {
 grid_search = GridSearchCV(pipeline, param_grid, cv=10,     
                             scoring='neg_mean_squared_error', n_jobs=-1, verbose=2)
 ```
+### Result
 
 After the regression, the best hyperparameters and the model performance is as following:
 
@@ -366,12 +376,12 @@ To assess whether my model is fair, I performed a fairness analysis by comparing
 
 ### Results
 
-'''
+```
 High-Income RMSE: 2658.2707
 Low-Income RMSE: 4332.8719
 Observed RMSE Difference (Low - High): 1674.6013
 P-value: 0.0620
-'''
+```
 
 <iframe
   src="assets/perm_test3.html"
