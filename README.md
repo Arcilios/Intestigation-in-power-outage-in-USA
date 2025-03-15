@@ -292,11 +292,18 @@ Test RMSE: 3586.3817
 ></iframe>
 
 The Final Model significantly improves upon the Baseline Model in terms of predictive accuracy and generalization.Below is a comparison of key metrics:
-| **Metric**                   | **Baseline Model**   | **Final Model**   | **Improvement**                  |
-|------------------------------|----------------------|-------------------|----------------------------------|
-| **Best Cross-Validation RMSE** | 29,019,658.1        | 3,888.63         | Drastically reduced error       |
-| **Train RMSE**               | 5,321.30            | 2,473.63         | Better fit to training data     |
-| **Test RMSE**                | 7,798.45            | 3,586.38         | Improved generalization         |
+**Best Cross-Validation RMSE**： 
+- **Baseline Model**: 29,019,658.1
+- **Final Model**: 3,888.63
+- **Improvement**: Drastically reduced error       
+**Train RMSE**
+- **Baseline Model**: 5,321.30 
+- **Final Model**: 2,473.63 
+- **Improvement**: Better fit to training data
+**Test RMSE**
+- **Baseline Model**: 7,798.45    
+- **Final Model**: 3,586.38 
+- **Improvement**: Improved generalizatio
 
 The Best Cross-Validation RMSE decreased dramatically from 29,019,658.1 in the Baseline Model to 3,888.63 in the Final Model, indicating a substantial reduction in prediction error. Additionally, the Train RMSE improved from 5,321.30 to 2,473.63, while the Test RMSE decreased from 7,798.45 to 3,586.38. This reduction in the gap between training and test errors suggests that the Final Model generalizes better and is less prone to overfitting compared to the Baseline Model.
 
