@@ -295,11 +295,13 @@ The Final Model significantly improves upon the Baseline Model in terms of predi
 **Best Cross-Validation RMSE**： 
 - **Baseline Model**: 29,019,658.1
 - **Final Model**: 3,888.63
-- **Improvement**: Drastically reduced error       
+- **Improvement**: Drastically reduced error
+  
 **Train RMSE**
 - **Baseline Model**: 5,321.30 
 - **Final Model**: 2,473.63 
 - **Improvement**: Better fit to training data
+
 **Test RMSE**
 - **Baseline Model**: 7,798.45    
 - **Final Model**: 3,586.38 
