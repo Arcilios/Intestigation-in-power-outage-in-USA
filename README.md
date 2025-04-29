@@ -33,33 +33,13 @@ In the dataset there are 57 columns and 1570 rows, recording 1534 cases of power
 
 To ensure the dataset is ready for analysis, I performed the following cleaning steps:
 
-1. Remove unwanted rolls and columns(head of table, redundant index, unit of features) and set features as column names:
-
-```python
-data = pd.read_excel("outage.xlsx")
-data = data[4:] #The first four lines are head of the table. Removed
-data.columns = data.iloc[0] #Setting the features as column names
-data = data[2:].drop(columns=['variables']) #Remove redundant index and columns
-```
+Remove unwanted rolls and columns(head of table, redundant index, unit of features) and set features as column names:
 
 - The first four rows contained metadata and headers, which were not actual data.
 - The variables column was not needed and was removed.
 - This step ensures a clean tabular format for analysis.
 
-2. For the ease of analysis, add a new column called ```season``` from ```MONTH```
-
-```python
-def season_check(month):
-    if month in [12, 1, 2]:
-        return 'Winter'
-    elif month in [3, 4, 5]:
-        return 'Spring'
-    elif month in [6, 7, 8]:
-        return 'Summer'
-    else:
-        return 'Fall'
-data['SEASON'] = data['MONTH'].transform(season_check)
-```
+For the ease of analysis, add a new column called ```season``` from ```MONTH```
 
 - Instead of analyzing MONTH as a numerical value, categorizing by SEASON allows better trend analysis.
 - This helps identify seasonal patterns in outage durations.
@@ -155,6 +135,8 @@ By further exploring the data, I found that when there is power outage because o
   frameborder="0"
 ></iframe>
 
+### Hypothesis Test
+
 To analyze whether this is caused by coincidence and whether the missing values in ```OUTAGE.DURATION``` depend on ```CAUSE.CATEGORY```, I performed a permutation test with:
 
 - **Null Hypothesis**: Missingness in ```OUTAGE.DURATION``` is independent of ```CAUSE.CATEGORY```
@@ -224,27 +206,12 @@ By using a mix of categorical and numerical features, this model aims to provide
 
 ## Baseline Model
 
+### Hyperparameters
+
 I trained a baseline model using a Random Forest Regressor with the following features: ```SEASON``` and ```CLIMATE.CATEGORY```, two categorical nomial data. The target variable is ```OUTAGE.DURATION```.
 Those categorical nomial variables were one-hot encoded. A Randome Forest Regressor was trained using GridSearchCV for hyperparameter tuning. RMSE was used as the primary evaluation metric.
 
-```python
-preprocessor = ColumnTransformer([
-    ('cat', OneHotEncoder(handle_unknown='ignore'), features)  
-])
-pipeline = Pipeline([
-    ('preprocessor', preprocessor),
-    ('model', RandomForestRegressor())
-])
-param_grid = {
-    'model__n_estimators': [50,100, 200],
-    'model__max_depth': [None, 10, 20],
-    'model__min_samples_split': [2, 5, 10],
-    'model__min_samples_leaf': [1, 2, 4]
-}
-grid_search = GridSearchCV(pipeline, param_grid, cv=5, 
-                            scoring='neg_mean_squared_error', n_jobs=-1)
-```
-
+### Result 
 After the regression, the best hyperparameters and the model performance is as following:
 
 ``` text
@@ -275,6 +242,8 @@ Also, the train RSME is smaller than the test RSME, indicating overfitting. In t
 
 After the baseline model, I trained a final model incorporating additional features and better preprocessing techniques. The selected features include:
 
+### Features Selection
+
 - ```CAUSE.CATEGORY.DETAIL```: Categorical, Ordinal
 Different causes (e.g., storms vs. equipment failure) lead to varying outage durations.
 - ```SEASON```: Categorical, Ordinal
@@ -290,6 +259,8 @@ Urban areas may recover faster due to better infrastructure.
 
 These features align with the data-generating process of power outages, improving model performance by capturing real-world outage patterns.
 
+### Hyperparameters
+
 I chose Random Forest Regression for predicting outage duration. This model is robust to non-linearity, handles categorical and numerical features well, and performs well with missing or imbalanced data.
 
 I used GridSearchCV with 10-fold cross-validation to systematically explore the best combination of hyperparameters. This approach tested multiple values for each hyperparameter and selected the combination that minimized the negative mean squared error (MSE).
@@ -298,25 +269,7 @@ For the hyperparameters, I first started with very broad ranges to get a rough e
 
 After obtaining initial results, I refined the search space by focusing on promising values.
 
-```python
-preprocessor = ColumnTransformer([
-    ('cat', OneHotEncoder(handle_unknown='ignore'), ['CAUSE.CATEGORY.DETAIL', 'SEASON', 'CLIMATE.REGION']),
-    ('num', StandardScaler(), ['CUSTOMERS.AFFECTED', 'DEMAND.LOSS.MW', 'POPULATION'])
-])
-pipeline = Pipeline([
-    ('preprocessor', preprocessor),
-    ('model', RandomForestRegressor(random_state=42))
-])
-param_grid = {
-    'model__n_estimators': [10,20,50,80, 100, 200], 
-    'model__max_depth': [None, 15, 20, 35, 40, 50],  
-    'model__min_samples_split': [2, 5, 10, 20, 30, 40],  
-    'model__min_samples_leaf': [1, 2, 4, 8, 16, 32]  
-}
-
-grid_search = GridSearchCV(pipeline, param_grid, cv=10,     
-                            scoring='neg_mean_squared_error', n_jobs=-1, verbose=2)
-```
+### Result
 
 After the regression, the best hyperparameters and the model performance is as following:
 
@@ -339,11 +292,21 @@ Test RMSE: 3586.3817
 ></iframe>
 
 The Final Model significantly improves upon the Baseline Model in terms of predictive accuracy and generalization.Below is a comparison of key metrics:
-| **Metric**                   | **Baseline Model**   | **Final Model**   | **Improvement**                  |
-|------------------------------|----------------------|-------------------|----------------------------------|
-| **Best Cross-Validation RMSE** | 29,019,658.1        | 3,888.63         | Drastically reduced error       |
-| **Train RMSE**               | 5,321.30            | 2,473.63         | Better fit to training data     |
-| **Test RMSE**                | 7,798.45            | 3,586.38         | Improved generalization         |
+
+**Best Cross-Validation RMSE**： 
+- **Baseline Model**: 29,019,658.1
+- **Final Model**: 3,888.63
+- **Improvement**: Drastically reduced error
+  
+**Train RMSE**
+- **Baseline Model**: 5,321.30 
+- **Final Model**: 2,473.63 
+- **Improvement**: Better fit to training data
+
+**Test RMSE**
+- **Baseline Model**: 7,798.45    
+- **Final Model**: 3,586.38 
+- **Improvement**: Improved generalizatio
 
 The Best Cross-Validation RMSE decreased dramatically from 29,019,658.1 in the Baseline Model to 3,888.63 in the Final Model, indicating a substantial reduction in prediction error. Additionally, the Train RMSE improved from 5,321.30 to 2,473.63, while the Test RMSE decreased from 7,798.45 to 3,586.38. This reduction in the gap between training and test errors suggests that the Final Model generalizes better and is less prone to overfitting compared to the Baseline Model.
 
@@ -366,12 +329,12 @@ To assess whether my model is fair, I performed a fairness analysis by comparing
 
 ### Results
 
-'''
+```
 High-Income RMSE: 2658.2707
 Low-Income RMSE: 4332.8719
 Observed RMSE Difference (Low - High): 1674.6013
 P-value: 0.0620
-'''
+```
 
 <iframe
   src="assets/perm_test3.html"
