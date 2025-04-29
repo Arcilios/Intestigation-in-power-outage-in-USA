@@ -386,3 +386,9 @@ Since the p-value is not statistically significant, I fail to reject the null hy
 
 My model does not exhibit significant disparities in predictive accuracy across income groups. However, fairness is a complex issue, and further analysis (e.g., considering intersectional factors such as population density and outage cause) may provide deeper insights into potential biases.
 
+<iframe
+  src="assets/actual_predicted.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
